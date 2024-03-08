@@ -93,27 +93,36 @@ const HomePage = (props: Props) => {
 
   useEffect(() => {
     const getBatteryInfo = () => {
-      navigator.getBattery().then((battery: { level: number; }) => {
-        setBatteryLevel(battery.level * 100);
-      });
+      if ('getBattery' in navigator) {
+        (navigator as any).getBattery().then((battery: { level: number }) => {
+          setBatteryLevel(battery.level * 100);
+        });
+      }
     };
-
+  
     getBatteryInfo();
-
+  
     const batteryEventListener = () => {
-      navigator.getBattery().then((battery: { level: number; }) => {
-        setBatteryLevel(battery.level * 100);
-      });
+      if ('getBattery' in navigator) {
+        (navigator as any).getBattery().then((battery: { level: number }) => {
+          setBatteryLevel(battery.level * 100);
+        });
+      }
     };
-
-    navigator.getBattery().then((battery: { addEventListener: (arg0: string, arg1: () => void) => void; }) => {
-      battery.addEventListener("levelchange", batteryEventListener);
-    });
+  
+  
+    if ('getBattery' in navigator) {
+      (navigator as any).getBattery().then((battery: { addEventListener: (arg0: string, arg1: () => void) => void }) => {
+        battery.addEventListener("levelchange", batteryEventListener);
+      });
+    }
 
     return () => {
-      navigator.getBattery().then((battery) => {
-        battery.removeEventListener("levelchange", batteryEventListener);
-      });
+      if ('getBattery' in navigator) {
+        (navigator as any).getBattery().then((battery: { removeEventListener: (arg0: string, arg1: () => void) => void }) => {
+          battery.removeEventListener("levelchange", batteryEventListener);
+        });
+      }
     };
   }, []);
 
